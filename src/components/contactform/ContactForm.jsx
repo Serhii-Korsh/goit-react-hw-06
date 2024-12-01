@@ -1,24 +1,23 @@
-// import React from 'react';
+import { useDispatch } from "react-redux";
+import { addContact } from "../../redux/contactsSlice";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import s from "./ContactForm.module.css";
+import { nanoid } from "nanoid";
 
-const ContactForm = ({ onSubmit }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
+
   const initialValues = { name: "", number: "" };
 
   const validationSchema = Yup.object({
-    name: Yup.string()
-      .min(3, "Minimum 3 characters")
-      .max(50, "Maximum 50 characters")
-      .required("Required name"),
-    number: Yup.string()
-      .min(3, "Minimum 3 characters")
-      .max(50, "Maximum 50 characters")
-      .required("Required number"),
+    name: Yup.string().min(3).max(50).required("Name is required"),
+    number: Yup.string().min(3).max(50).required("Number is required"),
   });
 
   const handleSubmit = (values, { resetForm }) => {
-    onSubmit(values);
+    const newContact = { id: nanoid(), ...values };
+    dispatch(addContact(newContact));
     resetForm();
   };
 
